@@ -14,15 +14,27 @@ server.post('/login', readBody, checkPassword)
 function showLogInPage(req, res) {
     res.render('login.html')
 }
+var valid = [ ]
 function checkPassword(req, res) {
     var sql = 'select * from member where email=? and password=sha2(?,512)'
     var data = [req.body.email, req.body.password] // สร้าง array
     pool.query(sql, data, function(error, data) {
-        if (data.length == 1) { res.send('Log In Passed') }
-        if (data.length != 1) { res.send('Log In Failed') }
+        if (data.length == 1) {
+            var card = parseInt(Math.random() * 1000000)
+            valid[card] = data[0] // เอาข้อมูลผู้ใช้คนนี้ใส่ valid เก็บไว้
+            res.header('Set-Cookie', 'card=' + card + ';max-age=' + 60*5)
+            res.redirect('/profile')
+        }
+        if (data.length != 1) { 
+            res.redirect('/login?message=Fail') 
+        }
     })
 }
-
+// npm install express ejs mysql body-parser cookie-parser
+// Cookie คือ ข้อมูลขนาดเล็ก ไม่เกิน 4 พันตัวอักษร
+// Cookie ถูกสร้างจาก Server ส่งไปที่ Client
+// และ Client จะส่งกลับมาทุกครั้ง
+// https://github.com/kookiatsuetrong/january
 server.get('/register', showRegisterPage)
 server.post('/register', readBody, registerMember)
 function showRegisterPage(req, res) {
