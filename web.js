@@ -13,8 +13,20 @@ var cookie     = require('cookie-parser')
 var readCookie = cookie()
 var multer     = require('multer')
 var uploadFile = multer({dest: 'photo'})
-
+var fs         = require('fs')
 server.engine('html', ejs.renderFile)
+server.post('/change-photo', readCookie, uploadFile.single('photo'), 
+                                changePhoto)
+function changePhoto(req, res) {
+    var card = req.cookies.card
+    if (valid[card]) {
+        fs.rename(  'photo/' + req.file.filename, 
+                    'photo/member-' + valid[card].id + '.jpg',
+                    function() {} )
+    }
+    res.redirect('/profile')
+}
+
 server.get('/profile', readCookie, showProfilePage)
 function showProfilePage(req, res) {
     var card = req.cookies.card
