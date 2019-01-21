@@ -1,21 +1,23 @@
-var express = require('express')  // เรียกใช้ express
-var server  = express() // สร้าง object ของ express
+var express    = require('express')  // เรียกใช้ express
+var server     = express() // สร้าง object ของ express
 server.listen(2000)
-var ejs     = require('ejs')
-var body    = require('body-parser') // เรียกใช้ body-parser
-var readBody = body()  // สร้าง object ของ body-parser
-var mysql    = require('mysql')
-var source   = { host: '35.189.167.56', user: 'james', password: 'bond', 
-                 database:'web'}
-var pool     = mysql.createPool(source) // source คือ แหล่งข้อมูล
-var valid = [ ]
-var cookie   = require('cookie-parser')
+var ejs        = require('ejs')
+var body       = require('body-parser') // เรียกใช้ body-parser
+var readBody   = body()  // สร้าง object ของ body-parser
+var mysql      = require('mysql')
+var source     = { host: '35.189.167.56', user: 'james', password: 'bond', 
+                   database:'web'}
+var pool       = mysql.createPool(source) // source คือ แหล่งข้อมูล
+var valid      = [ ]
+var cookie     = require('cookie-parser')
 var readCookie = cookie()
+var multer     = require('multer')
+var uploadFile = multer({dest: 'photo'})
+
 server.engine('html', ejs.renderFile)
 server.get('/profile', readCookie, showProfilePage)
 function showProfilePage(req, res) {
-    var card
-    if (req.cookies.card != null) card = req.cookies.card
+    var card = req.cookies.card
     if (valid[card]) {
         res.render('profile.html', {member: valid[card]})
     } else {

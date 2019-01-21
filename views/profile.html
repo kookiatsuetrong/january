@@ -4,6 +4,12 @@
     <h3>Hello <%= member.first_name %>
         <%= member.family_name %>
     </h3>
+
+    <form method='post' action='/change-photo'
+        enctype='multipart/form-data'>
+        <input type='file' name='photo' >
+        <button>Change</button>
+    </form>
 </div>
 
 <% include footer.html %>
