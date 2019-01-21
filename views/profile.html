@@ -5,13 +5,18 @@
         <%= member.family_name %>
     </h3>
 
-    <img src='/member-<%= member.id %>.jpg' >
+    <img src='/member-<%= member.id %>.jpg' class='profile-photo'>
 
     <form method='post' action='/change-photo'
         enctype='multipart/form-data'>
-        <input type='file' name='photo' >
+        <input type='file' name='photo' required >
         <button>Change</button>
     </form>
+    <style>
+        .profile-photo {
+            max-width: 300px;
+        }
+    </style>
 </div>
 
 <% include footer.html %>

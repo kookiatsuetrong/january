@@ -3,7 +3,7 @@ var server     = express() // สร้าง object ของ express
 server.listen(2000)
 var ejs        = require('ejs')
 var body       = require('body-parser') // เรียกใช้ body-parser
-var readBody   = body()  // สร้าง object ของ body-parser
+var readBody   = body.urlencoded({extended:false})  // สร้าง object ของ body-parser
 var mysql      = require('mysql')
 var source     = { host: '35.189.167.56', user: 'james', password: 'bond', 
                    database:'web'}
