@@ -1,0 +1,18 @@
+<i>Welcome to <%= shop %></i>
+
+<%
+var user = 'Mark Z'
+var data = ['Latte', 'Mocha', 'Espresso']
+%>
+
+<br>
+Hello <%= user %>
+
+<select>
+    <option>Cappuccino</option>
+    <option>Americano</option>
+    <option><%= data[0] %></option>
+    <% for (var i in data) { %>
+    <option><%= data[i] %></option>
+    <% } %>
+</select>

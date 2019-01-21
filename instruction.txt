@@ -1,0 +1,50 @@
+-- ติดตั้ง MySQL Server
+sudo apt update
+sudo apt install mysql-server
+
+-- เข้าไปสร้าง database, สร้าง user
+sudo mysql
+-- สร้าง user ชื่อ james มีรหัสผ่านคือ bond
+create user james identified by 'bond';
+-- สร้าง database ชื่อ web มีตัวอักษรเป็น utf8 เก็บได้ทุกภาษา
+create database web default charset 'utf8';
+-- ให้สิทธิกับ james ในการใช้งาน
+grant all on web.* to james;
+-- ออกจาก mysql
+exit;
+
+-- กลับเข้าไปใหม่ด้วย james
+mysql --user james --password
+-- ตอนพิมพ์รหัสผ่านของ james จะมองไม่เห็น *
+use web;
+-- not null คือ ต้องมีข้อมูล
+-- unique แต่ละบรรทัดห้ามซ้ำกัน
+-- auto_increment นับ 1,2,3 อัตโนมัติ
+create table member (
+  id          int unique not null auto_increment,
+  first_name  varchar(80) not null,
+  family_name varchar(80) not null,
+  email       varchar(80) unique not null,
+  password    varchar(200) not null,
+  dob         date,
+  gender      varchar(80)
+);
+insert into member(first_name, family_name, email, password)
+    values('Mark', 'Zuckerberg', 'mark@fb.com', sha2('mark123', 512));
+insert into member(first_name, family_name, email,password, gender)
+    values('Sheryl', 'Sandberg', 'sheryl@fb.com', 
+                sha2('sheryl123', 512), 'female');
+
+exit;
+
+-- ใน Ubuntu จะ lock การทำงานของ MySQL ไว้ที่เครื่องเดียวกัน
+-- ต้องไปปลด lock นี้ออกไปก่อน
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+มองหาคำว่า bind-address = 127.0.0.1
+เปลี่ยน mode กด [i]
+ใส่ # นำหน้า #bind-adress
+เปลี่ยน mode กด [esc]
+:wq [enter]
+-- restart mysql
+sudo service mysql restart
+
