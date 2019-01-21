@@ -15,8 +15,17 @@ var multer     = require('multer')
 var uploadFile = multer({dest: 'photo'})
 var fs         = require('fs')
 server.engine('html', ejs.renderFile)
+
+server.get('/register', showRegisterPage)
+server.post('/register', readBody, registerMember)
+server.get('/login', showLogInPage)
+server.post('/login', readBody, checkPassword)
+server.get('/profile', readCookie, showProfilePage)
 server.post('/change-photo', readCookie, uploadFile.single('photo'), 
                                 changePhoto)
+// ถ้าหา path ข้างนี้ไม่เจอ ให้ไปดูที่ folder ชื่อ photo
+server.use( express.static('photo') )
+
 function changePhoto(req, res) {
     var card = req.cookies.card
     if (valid[card]) {
@@ -27,7 +36,6 @@ function changePhoto(req, res) {
     res.redirect('/profile')
 }
 
-server.get('/profile', readCookie, showProfilePage)
 function showProfilePage(req, res) {
     var card = req.cookies.card
     if (valid[card]) {
@@ -36,9 +44,6 @@ function showProfilePage(req, res) {
         res.redirect('/login')
     }
 }
-
-server.get('/login', showLogInPage)
-server.post('/login', readBody, checkPassword)
 function showLogInPage(req, res) {
     res.render('login.html')
 }
@@ -58,62 +63,11 @@ function checkPassword(req, res) {
         }
     })
 }
-// npm install express ejs mysql body-parser cookie-parser
-// Cookie คือ ข้อมูลขนาดเล็ก ไม่เกิน 4 พันตัวอักษร
-// Cookie ถูกสร้างจาก Server ส่งไปที่ Client
-// และ Client จะส่งกลับมาทุกครั้ง
-// https://github.com/kookiatsuetrong/january
-server.get('/register', showRegisterPage)
-server.post('/register', readBody, registerMember)
+
 function showRegisterPage(req, res) {
     res.render('register.html')
 }
+
 function registerMember(req, res) {
     res.send( req.body )  // read หรือ readBody อ่านข้อมูลเก็บไว้ที่ req.body
 }
-// express จะเก็บข้อมูลจาก form ไว้ที่ req.query.xxxx
-// แต่สำหรับข้อมูลสำคัญที่ส่งผ่านการ post จะไม่ถูกดึงขึ้นมา
-// npm install express ejs body-parser
-
-var area = ['Talingchan', 'Bang Plad',
-    'Bang Yai', 'Patum Thani', 'Bangkok Noi']
-server.get('/search', showSearch)
-function showSearch(req, res) {
-    var r = 'Your city is not available'
-    if (req.query.city == null) {
-        r = ''
-    }
-    if (req.query.city != null) {
-        for (var i in area) {
-            if (area[i] == req.query.city) {
-                r = 'Your city is available'
-            }
-        }
-    }
-    res.render('search.html', {result: r})
-}
-
-server.get('/car', showCar)
-function showCar(req, res) {
-    var t = 0
-    if (req.query.engine == 'Diesel')
-        t = 0.85 * req.query.cc
-    if (req.query.engine == 'Benzene')
-        t = 1.05 * req.query.cc
-    res.render('car.html', {tax: t})
-}
-
-
-server.get('/', showHome)
-server.get(['/total', '/cashier'], showTotal)
-function showHome(req, res) {
-    res.render('index.html', {shop: 'iCoffee'})
-}
-function showTotal(req, res) {
-    var r = 0
-    if (req.query.price != null)
-        r = req.query.price * 1.08
-    res.render('total.html', {result: r})
-}  // <select name='engine'>...</select>
-// http://localhost:2000/cashier?price=150
-// express ได้เก็บค่า 150 ไว้ทีตัวแปร req.query.price
