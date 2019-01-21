@@ -48,3 +48,4 @@ sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
 -- restart mysql
 sudo service mysql restart
 
+npm install express ejs mysql body-parser

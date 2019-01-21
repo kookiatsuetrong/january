@@ -1,6 +1,21 @@
+<% include header.html %>
+<div class='container'>
 <form method='post'>
-    <input name='email' placeholder='Your Email'>
-    <input name='password' placeholder='Your Password'
-           type='password'>
-    <button>Log In</button>
+    <h3>Log In</h3>
+    <input name='email' 
+            placeholder='Your Email'
+            class='form-control'
+            autofocus>
+    <input name='password' 
+            placeholder='Your Password'
+           type='password'
+           class='form-control'>
+    <button class='btn btn-primary'>Log In</button>
+    <a href='/' class='btn btn-secondary'>Cancel</a>
 </form>
+<style>
+    form { max-width: 300px; }
+    input { margin-bottom: 8px; }
+</style>
+</div>
+<% include footer.html %>
