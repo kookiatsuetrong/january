@@ -8,13 +8,27 @@ var mysql    = require('mysql')
 var source   = { host: '35.189.167.56', user: 'james', password: 'bond', 
                  database:'web'}
 var pool     = mysql.createPool(source) // source คือ แหล่งข้อมูล
+var valid = [ ]
+var cookie   = require('cookie-parser')
+var readCookie = cookie()
 server.engine('html', ejs.renderFile)
+server.get('/profile', readCookie, showProfilePage)
+function showProfilePage(req, res) {
+    var card
+    if (req.cookies.card != null) card = req.cookies.card
+    if (valid[card]) {
+        res.render('profile.html', {member: valid[card]})
+    } else {
+        res.redirect('/login')
+    }
+}
+
 server.get('/login', showLogInPage)
 server.post('/login', readBody, checkPassword)
 function showLogInPage(req, res) {
     res.render('login.html')
 }
-var valid = [ ]
+
 function checkPassword(req, res) {
     var sql = 'select * from member where email=? and password=sha2(?,512)'
     var data = [req.body.email, req.body.password] // สร้าง array
