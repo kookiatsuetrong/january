@@ -49,3 +49,14 @@ sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo service mysql restart
 
 npm install express ejs mysql body-parser
+npm install cookie-parser multer
+
+mysql --user james --password
+(typing password without *)
+use web;
+alter table member 
+    add account varchar(80) unique;
+alter table member
+    add latitude decimal(20, 15);
+alter table member
+    add longitude decimal(20, 15);
