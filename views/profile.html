@@ -2,6 +2,7 @@
 
 <style>
     .profile-photo {
+        border: 2px solid hotpink;
         border-radius: 50%;
         max-width: 100%;
     }
@@ -31,7 +32,12 @@
             <h3><%= member.first_name %>
                 <%= member.family_name %>
             </h3>
-            <form method='post'>
+            <form method='post' action='/save-info'>
+                <input name='account'
+                        value='<%= member.account %>'
+                        class='form-control'
+                        placeholder='Your Account'
+                >
                 <input name='first-name'
                        value='<%= member.first_name %>'
                        class='form-control'
