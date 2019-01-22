@@ -14,6 +14,7 @@ var readCookie = cookie()
 var multer     = require('multer')
 var uploadFile = multer({dest: 'photo'})
 var fs         = require('fs')
+var sharp      = require('sharp')
 server.engine('html', ejs.renderFile)
 
 server.get (['/register','/join'], showRegisterPage)
@@ -64,6 +65,7 @@ function saveInfo(req, res) {
 function showError(req, res) {
     res.render('error.html')
 }
+
 function showDefaultPhoto(req, res) {
     res.redirect('/default.jpg')
 }
@@ -71,11 +73,19 @@ function showDefaultPhoto(req, res) {
 function changePhoto(req, res) {
     var card = req.cookies.card
     if (valid[card]) {
-        fs.rename(  'photo/' + req.file.filename, 
-                    'photo/member-' + valid[card].id + '.jpg',
-                    function() {} )
+        var old  = 'photo/' + req.file.filename
+        var next = 'photo/member-' + valid[card].id + '.jpg'
+        fs.rename(old, next, function() {
+            sharp(next).resize({width:200,height:200})
+            .toBuffer().then( function (data) {
+                fs.writeFile(next, data, function() {
+                    res.redirect('/profile') 
+                })
+            })
+        })
+    } else {
+        res.redirect('/profile')
     }
-    res.redirect('/profile')
 }
 
 function showProfilePage(req, res) {
