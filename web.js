@@ -16,15 +16,24 @@ var uploadFile = multer({dest: 'photo'})
 var fs         = require('fs')
 server.engine('html', ejs.renderFile)
 
-server.get('/register', showRegisterPage)
-server.post('/register', readBody, registerMember)
+server.get (['/register','/join'], showRegisterPage)
+server.post(['/register', '/join'], readBody, registerMember)
 server.get('/login', showLogInPage)
 server.post('/login', readBody, checkPassword)
 server.get('/profile', readCookie, showProfilePage)
 server.post('/change-photo', readCookie, uploadFile.single('photo'), 
                                 changePhoto)
-// ถ้าหา path ข้างนี้ไม่เจอ ให้ไปดูที่ folder ชื่อ photo
-server.use( express.static('photo') )
+// ถ้าหา path ข้างบนนี้ไม่เจอ ให้ไปดูที่ folder ชื่อ photo
+server.use( express.static('photo') )   // ทุก path
+server.get( '/*.jpg', showDefaultPhoto) // เฉพาะ file ที่ลงท้ายด้วย .jpg
+server.use( showError ) // ทุก path
+
+function showError(req, res) {
+    res.render('error.html')
+}
+function showDefaultPhoto(req, res) {
+    res.redirect('/default.jpg')
+}
 
 function changePhoto(req, res) {
     var card = req.cookies.card
