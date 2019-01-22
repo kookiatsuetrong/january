@@ -15,6 +15,8 @@ var multer     = require('multer')
 var uploadFile = multer({dest: 'photo'})
 var fs         = require('fs')
 var sharp      = require('sharp')
+sharp.cache(false)
+
 server.engine('html', ejs.renderFile)
 
 server.get (['/register','/join'], showRegisterPage)
@@ -77,7 +79,7 @@ function changePhoto(req, res) {
         var next = 'photo/member-' + valid[card].id + '.jpg'
         fs.rename(old, next, function() {
             sharp(next).resize({width:200,height:200})
-            .toBuffer().then( function (data) {
+            .toBuffer().then( function(data) {
                 fs.writeFile(next, data, function() {
                     res.redirect('/profile') 
                 })
@@ -121,5 +123,5 @@ function showRegisterPage(req, res) {
 }
 
 function registerMember(req, res) {
-    res.send( req.body )  // read หรือ readBody อ่านข้อมูลเก็บไว้ที่ req.body
+    res.send( req.body )  // readBody อ่านข้อมูลเก็บไว้ที่ req.body
 }

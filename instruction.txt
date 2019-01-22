@@ -49,7 +49,7 @@ sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo service mysql restart
 
 npm install express ejs mysql body-parser
-npm install cookie-parser multer
+npm install cookie-parser multer sharp
 
 mysql --user james --password
 (typing password without *)
