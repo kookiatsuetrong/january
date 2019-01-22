@@ -25,20 +25,25 @@ server.post('/change-photo', readCookie, uploadFile.single('photo'),
                                 changePhoto)
 server.post('/save-info', readCookie, readBody,
                                 saveInfo)
+server.get('/logout', readCookie, showLogOutPage)
 
 // ถ้าหา path ข้างบนนี้ไม่เจอ ให้ไปดูที่ folder ชื่อ photo
 server.use( express.static('photo') )   // ทุก path
 server.get( '/*.jpg', showDefaultPhoto) // เฉพาะ file ที่ลงท้ายด้วย .jpg
 server.use( showError ) // ทุก path
 
+function showLogOutPage(req, res) {
+    var card = req.cookies.card
+    delete valid[card]
+    res.render('logout.html')
+}
+
 function saveInfo(req, res) {
     var card = req.cookies.card
     if (valid[card]) {
         var sql = 'update member set account=?, ' +
-            ' first_name=?, family_name=? where ' +
-            ' id=? '
-        if (req.body.account == '')
-            req.body.account = null
+            ' first_name=?, family_name=? where id=? '
+        if (req.body.account == '') { req.body.account = null }
         var data = [req.body.account, 
                     req.body['first-name'],
                     req.body['family-name'],
