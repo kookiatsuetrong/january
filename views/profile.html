@@ -30,6 +30,10 @@
     <div class='row'>
         <div class='col-12 col-sm-4'>
             <img src='/member-<%= member.id %>.jpg' class='profile-photo'>
+            <button onclick='showLocation()'
+                class='btn btn-secondary'
+                style='margin: 4px auto; display: block;'
+                >Show Location</button>
         </div>
         <div class='col-12 col-sm-8'>
             <h3><%= member.first_name %>
@@ -81,5 +85,23 @@
         <button>Change</button>
     </form>
 </div>
+<script>
+function showLocation() {
+    var info = { enableHighAccuracy: true }
+    navigator.geolocation.getCurrentPosition(success, fail, info)
+}
+function success(p) {
+    var message =   'Your latitude is ' +
+                    p.coords.latitude + 
+                    ' and longitude is ' +
+                    p.coords.longitude
+    // alert(message)
+    fetch('/update-location?latitude=' + p.coords.latitude +
+                '&longitude=' + p.coords.longitude)
+}
+function fail(e) {
+    alert('Unable to get your location.')
+}
+</script>
 
 <% include footer.html %>

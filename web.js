@@ -35,11 +35,28 @@ server.post('/save-info',           readCookie,
                                     saveInfo)
 server.get('/logout',               readCookie, 
                                     showLogOutPage)
+server.get('/update-location',      readCookie,
+                                    updateLocation)
 
 // ถ้าหา path ข้างบนนี้ไม่เจอ ให้ไปดูที่ folder ชื่อ photo
 server.use( express.static('photo') )   // ทุก path
 server.get( '/*.jpg', showDefaultPhoto) // เฉพาะ file ที่ลงท้ายด้วย .jpg
 server.use( showError ) // ทุก path
+
+function updateLocation(req, res) {
+    var card = req.cookies.card
+    if (valid[card]) {
+        var sql = 'update member set latitude=?, longitude=? ' +
+                  ' where id=?'
+        var data = [req.query.latitude, req.query.longitude, 
+                    valid[card].id]
+        pool.query(sql, data, function() {
+            res.send( {location: 'ok'} )
+        })
+    } else {
+        res.send( { location: 'error'} )
+    }
+}
 
 function showLogOutPage(req, res) {
     var card = req.cookies.card
