@@ -19,16 +19,22 @@ sharp.cache(false)
 
 server.engine('html', ejs.renderFile)
 
-server.get (['/register','/join'], showRegisterPage)
-server.post(['/register', '/join'], readBody, registerMember)
-server.get('/login', showLogInPage)
-server.post('/login', readBody, checkPassword)
-server.get('/profile', readCookie, showProfilePage)
-server.post('/change-photo', readCookie, uploadFile.single('photo'), 
-                                changePhoto)
-server.post('/save-info', readCookie, readBody,
-                                saveInfo)
-server.get('/logout', readCookie, showLogOutPage)
+server.get (['/register','/join'],  showRegisterPage)
+server.post(['/register', '/join'], readBody, 
+                                    registerMember)
+server.get('/login',                showLogInPage)
+server.post('/login',               readBody, 
+                                    checkPassword)
+server.get('/profile',              readCookie, 
+                                    showProfilePage)
+server.post('/change-photo',        readCookie, 
+                                    uploadFile.single('photo'), 
+                                    changePhoto)
+server.post('/save-info',           readCookie, 
+                                    readBody,
+                                    saveInfo)
+server.get('/logout',               readCookie, 
+                                    showLogOutPage)
 
 // ถ้าหา path ข้างบนนี้ไม่เจอ ให้ไปดูที่ folder ชื่อ photo
 server.use( express.static('photo') )   // ทุก path
@@ -45,17 +51,20 @@ function saveInfo(req, res) {
     var card = req.cookies.card
     if (valid[card]) {
         var sql = 'update member set account=?, ' +
-            ' first_name=?, family_name=? where id=? '
+            ' first_name=?, family_name=?, dob=? ' +
+            ' where id=? '
         if (req.body.account == '') { req.body.account = null }
         var data = [req.body.account, 
                     req.body['first-name'],
                     req.body['family-name'],
+                    req.body.dob,
                     valid[card].id ]
         pool.query(sql, data, function(e, r) {
             if (e == null) {
-                valid[card].account = req.body.account
-                valid[card].first_name = req.body['first-name']
+                valid[card].account     = req.body.account
+                valid[card].first_name  = req.body['first-name']
                 valid[card].family_name = req.body['family-name']
+                valid[card].dob         = req.body.dob
             }
             res.redirect('/profile')
         })

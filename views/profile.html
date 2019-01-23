@@ -12,7 +12,7 @@
         color: white;
         margin-bottom: 10px;
     }
-    input {
+    input,select {
         margin-bottom: 8px;
     }
 </style>
@@ -44,10 +44,21 @@
                 <input name='first-name'
                        value='<%= member.first_name %>'
                        class='form-control'
+                       placeholder='Your Name'
                 >
                 <input name='family-name'
                        value='<%= member.family_name %>'
                        class='form-control'
+                       placeholder='Your Family Name'
+                >
+                <select name='gender' class='form-control'>
+                    <option>Male</option>
+                    <option>Female</option>
+                </select>
+                <input name='dob'
+                    value='<%= member.dob %>'
+                    class='form-control'
+                    placeholder='Date of Birth'
                 >
                 <button class='btn btn-primary'>Save</button>
             </form>
