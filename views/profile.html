@@ -52,8 +52,14 @@
                        placeholder='Your Family Name'
                 >
                 <select name='gender' class='form-control'>
-                    <option>Male</option>
-                    <option>Female</option>
+                    <% if (member.gender == 'female') { %>
+                    <option value='male'>Male</option>
+                    <option value='female' selected>Female</option>
+                    <% } %>
+                    <% if (member.gender != 'female') { %>
+                        <option value='male' selected>Male</option>
+                        <option value='female'>Female</option>
+                    <% } %>
                 </select>
                 <input name='dob'
                     value='<%= member.dob %>'

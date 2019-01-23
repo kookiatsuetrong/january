@@ -51,13 +51,16 @@ function saveInfo(req, res) {
     var card = req.cookies.card
     if (valid[card]) {
         var sql = 'update member set account=?, ' +
-            ' first_name=?, family_name=?, dob=? ' +
+            ' first_name=?, family_name=?, dob=?, ' +
+            ' gender=? ' +
             ' where id=? '
         if (req.body.account == '') { req.body.account = null }
+        if (req.body.dob     == '') { req.body.dob     = null }
         var data = [req.body.account, 
                     req.body['first-name'],
                     req.body['family-name'],
                     req.body.dob,
+                    req.body.gender,
                     valid[card].id ]
         pool.query(sql, data, function(e, r) {
             if (e == null) {
@@ -65,6 +68,7 @@ function saveInfo(req, res) {
                 valid[card].first_name  = req.body['first-name']
                 valid[card].family_name = req.body['family-name']
                 valid[card].dob         = req.body.dob
+                valid[card].gender      = req.body.gender
             }
             res.redirect('/profile')
         })
