@@ -1,18 +1,42 @@
-<i>Welcome to <%= shop %></i>
+<% include header.html %>
+<div class='container'>
+    <h3>Welcome</h3>
+    <div id='current'></div>
+    <button onclick='refresh()'
+        class='btn btn-primary'>Refresh</button>
+</div>
+<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyC-BAUXs3HyQa9-jAv8XTbTeADtmFXLXns'>
+</script>
+<script>
+var current = document.getElementById('current')
+var info = { 
+    center: { lat: 14, lng: 100},
+    zoom: 12
+}
+var main = new google.maps.Map(current, info)
 
-<%
-var user = 'Mark Z'
-var data = ['Latte', 'Mocha', 'Espresso']
-%>
+function refresh() {
+    $.get('/list-member').done(show)
+}
+function show(member) {
+    // var member = [{"id":1,"first_name":"Mark","latitude":13.7400568,"longitude":100.5244724},{"id":2,"first_name":"Sheryl","latitude":14,"longitude":100}]
 
-<br>
-Hello <%= user %>
-
-<select>
-    <option>Cappuccino</option>
-    <option>Americano</option>
-    <option><%= data[0] %></option>
-    <% for (var i in data) { %>
-    <option><%= data[i] %></option>
-    <% } %>
-</select>
+    for (var i in member) {
+        var photo = {
+            url: '/member-' + member[i].id + '.jpg',
+            scaledSize: new google.maps.Size(40,40)
+        }
+        var m = {
+            position: {lat: member[i].latitude, 
+                       lng: member[i].longitude},
+            map: main,
+            icon: photo
+        }
+        var marker = new google.maps.Marker(m)
+    }
+}
+</script>
+<style>
+    #current {height: 400px; margin-bottom: 4px;}
+</style>
+<% include footer.html %>

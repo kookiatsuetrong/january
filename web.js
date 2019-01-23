@@ -19,6 +19,8 @@ sharp.cache(false)
 
 server.engine('html', ejs.renderFile)
 
+server.get('/', function(req, res) { res.render('index.html') })
+
 server.get (['/register','/join'],  showRegisterPage)
 server.post(['/register', '/join'], readBody, 
                                     registerMember)
@@ -37,11 +39,20 @@ server.get('/logout',               readCookie,
                                     showLogOutPage)
 server.get('/update-location',      readCookie,
                                     updateLocation)
+server.get('/list-member',          listMember)
 
 // ถ้าหา path ข้างบนนี้ไม่เจอ ให้ไปดูที่ folder ชื่อ photo
 server.use( express.static('photo') )   // ทุก path
 server.get( '/*.jpg', showDefaultPhoto) // เฉพาะ file ที่ลงท้ายด้วย .jpg
 server.use( showError ) // ทุก path
+
+function listMember(req, res) {
+    var sql = 'select id, first_name, latitude, longitude from member ' +
+              ' where latitude is not null '
+    pool.query(sql, function(e, r) {
+        res.send(r)
+    })
+}
 
 function updateLocation(req, res) {
     var card = req.cookies.card
